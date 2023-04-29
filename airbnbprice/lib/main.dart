@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sagnik and Namrata\'s app',
+      title: 'AirBnb Price Detector',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,9 +24,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        //primarySwatch: Colors.amber,
       ),
-      home: const MyHomePage(title: 'Sagnik and Namrata\'s app'),
+      home: const MyHomePage(title: 'AirBnb Price Predictor'),
     );
   }
 }
@@ -48,68 +50,263 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<String> textLabels = [];
+  //List<String> textValues;
+  @override
+  void initState() {
+    super.initState();
+     textLabels = [
+      'Neighbourhood',
+      'Neighbourhood Group',
+      'Latitude',
+      'Longitude',
+      'Room Type',
+      'Minimum Nights',
+      'Number of reviews',
+      'Reviews per month',
+      'Host listing count',
+      'Availability(Max:365 Days)',
+      'Textbox 11'
+    ];
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+
+  }
+
+  String dropdownValue1 = "Select an option";
+  String dropdownValue2 = 'Select an option';
+  String dropdownValue3 = 'Select an option';
+  String dropdownValue4 = 'Select an option';
+
+  bool isDropdownSelected =false;
+  bool isTextFilled = false;
+
+  // final List<String> textLabels = [
+  //   'Neighbourhood',
+  //   'Neighbourhood Group',
+  //   'Latitude',
+  //   'Longitude',
+  //   'Room Type',
+  //   'Minimum Nights',
+  //   'Number of reviews',
+  //   'Reviews per month',
+  //   'Host listing count',
+  //   'Availability(Max:365 Days)',
+  //   'Textbox 11'
+  // ];
+
+
+
+  Widget _getTextFieldWidget(int i) {
+
+    final List<TextEditingController> _controllers = List.generate(
+        textLabels.length, (index) => TextEditingController());
+    switch (i) {
+      case 0:
+        return DropdownButton(
+          value: dropdownValue1,
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue1 = newValue!;
+            });
+            isDropdownSelected = true;
+          },
+          items: <String>['Select an option','Option 1', 'Option 2', 'Option 3', 'Option 4']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        );
+
+      case 1:
+        return DropdownButton(
+          value: dropdownValue2,
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue2 = newValue!;
+            });
+            isDropdownSelected = true;
+          },
+          items: <String>['Select an option','Option 1', 'Option 2', 'Option 3', 'Option 4']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        );
+      case 2:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 3:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+
+      case 4:
+        return DropdownButton(
+          value: dropdownValue3,
+          onChanged: (String? newValue) {
+            setState(() {
+              dropdownValue3 = newValue!;
+            });
+            isDropdownSelected = true;
+          },
+          items: <String>['Select an option','Room 1', 'Room 2', 'Room 3', 'Room 4']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        );
+
+      case 5:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 7:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 6:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 7:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 8:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 9:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      case 10:
+        return TextField(
+          controller: _controllers[i],
+          decoration: InputDecoration(
+            hintText: 'Enter text here',
+          ),
+        );
+      default:
+        return Container();
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+          backgroundColor: Colors.amber.shade800,
+
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                 Text(
+                  'Enter the following: ',
+                ),
+                SizedBox(height: 16),
+                for (int i = 0; i < textLabels.length; i++)
+                  Row(
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(textLabels[i] + ':'),
+                      SizedBox(width: 25),
+                      Expanded(
+                        flex: 1,
+                        child: _getTextFieldWidget(i),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green[600] ,
+                    shape:RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                  ),
+                   onPressed: () {
+                     final List<TextEditingController> _controllers = List.generate(
+                         textLabels.length, (index) => TextEditingController());
+
+                     for (int i = 1; i < textLabels.length; i++) {
+                       if (i!=0 || i!=1 || i!= 4) {
+                         print(_controllers[i]);
+                         if (_controllers[i].text.isEmpty) {
+                           isTextFilled=false;
+                         }else{
+                           isTextFilled=true;
+                         }
+                       }
+                     }
+                     if(isTextFilled==true && isDropdownSelected==true){
+                       // showDialog(
+                       //     context: context,
+                       //     builder: (_) => AlertDialog(
+                       //       title: Text('Error'),
+                       //       content: Text('Please fill in all the fields.'),
+                       //       actions: [
+                       //         TextButton(
+                       //           onPressed: () => Navigator.pop(context),
+                       //           child: Text('OK'),
+                       //         )
+                       //       ],
+                       //     )
+                       // );
+                       print("ALL NOT FILLED");
+                     }else{
+                       print("ALL FILLED");
+                       print(isTextFilled);
+                       print(isDropdownSelected);
+                     }
+                   },
+                  child: Center(
+                  child: Text('Predict Price'),
+                ),)
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+
