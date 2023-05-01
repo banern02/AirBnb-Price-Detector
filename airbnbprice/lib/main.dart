@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
+
+final List<TextEditingController> _controllers = List.generate(11, (index) => TextEditingController());
 void main() {
   runApp(const MyApp());
 }
@@ -78,6 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String dropdownValue4 = 'Select an option';
 
   bool isDropdownSelected =false;
+  bool dropdown1 = false;
+  bool dropdown2 = false;
+  bool dropdown3 = false;
   bool isTextFilled = false;
 
   // final List<String> textLabels = [
@@ -98,8 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _getTextFieldWidget(int i) {
 
-    final List<TextEditingController> _controllers = List.generate(
-        textLabels.length, (index) => TextEditingController());
+
     switch (i) {
       case 0:
         return DropdownButton(
@@ -108,7 +112,12 @@ class _MyHomePageState extends State<MyHomePage> {
             setState(() {
               dropdownValue1 = newValue!;
             });
-            isDropdownSelected = true;
+            if (dropdownValue1=='Select an option') {
+              dropdown1 = false;
+            }
+            else{
+              dropdown1 = true;
+            }
           },
           items: <String>['Select an option','Option 1', 'Option 2', 'Option 3', 'Option 4']
               .map<DropdownMenuItem<String>>((String value) {
@@ -126,7 +135,12 @@ class _MyHomePageState extends State<MyHomePage> {
             setState(() {
               dropdownValue2 = newValue!;
             });
-            isDropdownSelected = true;
+            if (dropdownValue2=='Select an option') {
+              dropdown2 = false;
+            }
+            else{
+              dropdown2 = true;
+            }
           },
           items: <String>['Select an option','Option 1', 'Option 2', 'Option 3', 'Option 4']
               .map<DropdownMenuItem<String>>((String value) {
@@ -158,7 +172,12 @@ class _MyHomePageState extends State<MyHomePage> {
             setState(() {
               dropdownValue3 = newValue!;
             });
-            isDropdownSelected = true;
+            if (dropdownValue3=='Select an option') {
+              dropdown3 = false;
+            }
+            else{
+              dropdown3 = true;
+            }
           },
           items: <String>['Select an option','Room 1', 'Room 2', 'Room 3', 'Room 4']
               .map<DropdownMenuItem<String>>((String value) {
@@ -263,12 +282,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                    onPressed: () {
-                     final List<TextEditingController> _controllers = List.generate(
-                         textLabels.length, (index) => TextEditingController());
+                     // final List<TextEditingController> _controllers = List.generate(
+                     //     textLabels.length, (index) => TextEditingController());
 
-                     for (int i = 1; i < textLabels.length; i++) {
-                       if (i!=0 || i!=1 || i!= 4) {
-                         print(_controllers[i]);
+                     for (int i = 0; i < textLabels.length; i++) {
+                       if (i==0) {
+                         print(dropdownValue1);
+                       }
+                       else if(i==1){
+                         print(dropdownValue2);
+                       }
+                       else if(i==4){
+                         print(dropdownValue3);
+                       }
+                       else{
+                         print(_controllers[i].text);
                          if (_controllers[i].text.isEmpty) {
                            isTextFilled=false;
                          }else{
@@ -276,25 +304,27 @@ class _MyHomePageState extends State<MyHomePage> {
                          }
                        }
                      }
-                     if(isTextFilled==true && isDropdownSelected==true){
-                       // showDialog(
-                       //     context: context,
-                       //     builder: (_) => AlertDialog(
-                       //       title: Text('Error'),
-                       //       content: Text('Please fill in all the fields.'),
-                       //       actions: [
-                       //         TextButton(
-                       //           onPressed: () => Navigator.pop(context),
-                       //           child: Text('OK'),
-                       //         )
-                       //       ],
-                       //     )
-                       // );
+                     if((isTextFilled==false) || ((dropdown1&&dropdown2&&dropdown3)==false)){
+                       showDialog(
+                           context: context,
+                           builder: (_) => AlertDialog(
+                             title: Text('Error'),
+                             content: Text('Please fill in all the fields.'),
+                             actions: [
+                               TextButton(
+                                 onPressed: () => Navigator.pop(context),
+                                 child: Text('OK'),
+                               )
+                             ],
+                           )
+                       );
                        print("ALL NOT FILLED");
+                       print(isTextFilled==false);
+                       print((dropdown1&&dropdown2&&dropdown3)==false);
                      }else{
                        print("ALL FILLED");
-                       print(isTextFilled);
-                       print(isDropdownSelected);
+                       print(isTextFilled==false);
+                       print((dropdown1&&dropdown2&&dropdown3)==false);
                      }
                    },
                   child: Center(
