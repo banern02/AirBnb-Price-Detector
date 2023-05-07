@@ -9,7 +9,7 @@ import 'logo.dart';
 
 
 final List<TextEditingController> _controllers = List.generate(11, (index) => TextEditingController());
-
+List<double> doubleList =[];
 final List<String> room_list = ['Select an option', 'Entire home/apt', 'Hotel room', 'Private room', 'Shared room'];
 final List<String> Neighbourhood_group_list = ['Select an option', 'Brooklyn', 'Manhattan', 'Queens', 'Bronx', 'Staten Island'];
 final List<String> Neighbourhood_brooklyn = ['Select an option','Bath Beach','Bay Ridge','Bedford-Stuyvesant','Bensonhurst','Bergen Beach','Boerum Hill','Borough Park','Brighton Beach','Brooklyn Heights','Brownsville','Bushwick','Canarsie','Carroll Gardens','Clinton Hill','Cobble Hill','Columbia St','Coney Island','Crown Heights','Cypress Hills','DUMBO','Downtown Brooklyn','Dyker Heights','East Flatbush','East New York','Flatbush','Flatlands','Fort Greene','Fort Hamilton','Gerritsen Beach','Gowanus','Gravesend','Greenpoint','Kensington','Manhattan Beach','Midwood','Mill Basin','Navy Yard','Park Slope','Prospect Heights','Prospect-Lefferts Gardens','Red Hook','Sea Gate','Sheepshead Bay','South Slope','Sunset Park','Vinegar Hill','Williamsburg','Windsor Terrace'];
@@ -37,6 +37,8 @@ final Map Room_type = {'Entire home/apt':0, 'Hotel room':1, 'Private room':2, 'S
 
 final List<double> scale_mean = [0.8814126 ,  38.04257555,  40.72669618, -73.94218229, 0.85186129,  15.19342101,  34.13364965,   1.28683852, 10.43855683, 141.46584721,  10.38375314];
 final List<double> scale_scale = [0.901201322, 43.1751756, 0.0585452690, 0.0570983405,  1.00495316, 16.1729255, 62.2205001, 1.94478734,  37.6716398, 141.179383, 20.6322141];
+
+String ng = '';
 
 void main() {
   runApp(const MyApp());
@@ -126,6 +128,40 @@ class _MyHomePageState extends State<MyHomePage> {
   bool dropdown3 = false;
   bool isTextFilled = false;
 
+  void updateDropdownOptions(String selectedOption) {
+    setState(() {
+      dropdownValue1 = selectedOption;
+      if (selectedOption == 'Select an option') {
+        dropdown1 = false;
+        dropdown2 = false;
+        Neighbourhood_dropdown = ['Select an option'];
+        dropdownValue2 = 'Select an option';
+      } else {
+        dropdown1 = true;
+        dropdownValue2 = 'Select an option';
+        Neighbourhood_dropdown = [];
+
+        switch (selectedOption) {
+          case 'Brooklyn':
+            Neighbourhood_dropdown.addAll(Neighbourhood_brooklyn);
+            break;
+          case 'Manhattan':
+            Neighbourhood_dropdown.addAll(Neighbourhood_manhattan);
+            break;
+          case 'Queens':
+            Neighbourhood_dropdown.addAll(Neighbourhood_queens);
+            break;
+          case 'Bronx':
+            Neighbourhood_dropdown.addAll(Neighbourhood_bronx);
+            break;
+          case 'Staten Island':
+            Neighbourhood_dropdown.addAll(Neighbourhood_staten);
+            break;
+        }
+      }
+    });
+  }
+
 
   Widget _getTextFieldWidget(int i) {
 
@@ -135,33 +171,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return DropdownButton(
           value: dropdownValue1,
           onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue1 = newValue!;
-            });
-
-            if (dropdownValue1=='Select an option') {
-              dropdown1 = false;
-            }
-            else{
-              dropdown1 = true;
-            }
-            Neighbourhood_dropdown = ['Select an option'];
-            if (dropdownValue1=='Brooklyn'){
-              Neighbourhood_dropdown = Neighbourhood_brooklyn;
-            }
-            else if (dropdownValue1=='Manhattan'){
-              Neighbourhood_dropdown = Neighbourhood_manhattan;
-            }
-            else if (dropdownValue1=='Queens'){
-              Neighbourhood_dropdown = Neighbourhood_queens;
-            }
-            else if (dropdownValue1=='Bronx'){
-              Neighbourhood_dropdown = Neighbourhood_bronx;
-            }
-            else if (dropdownValue1=='Staten Island'){
-              Neighbourhood_dropdown = Neighbourhood_staten;
-            }
-          },
+          updateDropdownOptions(newValue!);
+        },
           items: Neighbourhood_group_list
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
@@ -178,14 +189,12 @@ class _MyHomePageState extends State<MyHomePage> {
           onChanged: (String? newValue) {
             setState(() {
               dropdownValue2 = newValue!;
-
+              if (newValue == 'Select an option') {
+                dropdown2 = false;
+              } else {
+                dropdown2 = true;
+              }
             });
-            if (dropdownValue2=='Select an option') {
-              dropdown2 = false;
-            }
-            else{
-              dropdown2 = true;
-            }
           },
 
           items: Neighbourhood_dropdown
@@ -296,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          backgroundColor: Colors.amber.shade800,
+          backgroundColor: Colors.blueGrey[900],
 
         ),
         body: Center(
@@ -313,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     //crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(padding: EdgeInsets.fromLTRB(10, 5, 5, 5)),
-                      Text(textLabels[i] + ' '*(20-textLabels[i].length)+':'),
+                      Text(textLabels[i] + ' '*(15-textLabels[i].length)+':'),
                       SizedBox(width: 25),
                       Expanded(
                         flex: 1,
@@ -342,6 +351,7 @@ class _MyHomePageState extends State<MyHomePage> {
                        }
                        else if(i==1){
                          //print(dropdownValue2);
+                         ng = dropdownValue2;
                          inputList.add(Neighbourhood[dropdownValue2].toString());
                        }
                        else if(i==4){
@@ -359,37 +369,38 @@ class _MyHomePageState extends State<MyHomePage> {
                        }
                      }
                      if((isTextFilled==false) || ((dropdown1&&dropdown2&&dropdown3)==false)){
-                       // showDialog(
-                       //     context: context,
-                       //     builder: (_) => AlertDialog(
-                       //       title: Text('Error'),
-                       //       content: Text('Please fill in all the fields.'),
-                       //       actions: [
-                       //         TextButton(
-                       //           onPressed: () => Navigator.pop(context),
-                       //           child: Text('OK'),
-                       //         )
-                       //       ],
-                       //     )
-                       // );
-                       print(predData([2.3508480827550318, 1.5971544641499962, 1.538532857368896, 2.027769791312911, 2.1375510775049458, -0.8776038082905903, -0.5164479488007201, -0.6462601304263941, -0.25054807489426034, 1.547918316019273, -0.5032786636311611]));
+                       showDialog(
+                           context: context,
+                           builder: (_) => AlertDialog(
+                             title: Text('Error'),
+                             content: Text('Please fill in all the fields.'),
+                             actions: [
+                               TextButton(
+                                 onPressed: () => Navigator.pop(context),
+                                 child: Text('OK'),
+                               )
+                             ],
+                           )
+                       );
+                      // print(predData([2.3508480827550318, 1.5971544641499962, 1.538532857368896, 2.027769791312911, 2.1375510775049458, -0.8776038082905903, -0.5164479488007201, -0.6462601304263941, -0.25054807489426034, 1.547918316019273, -0.5032786636311611]));
                        // Navigator.push(context,
                        //         MaterialPageRoute(builder: (context) => MapScreen()));
                        print("ALL NOT FILLED");
                        // print(isTextFilled==false);
                        // print((dropdown1&&dropdown2&&dropdown3)==false);
-                       print("INPUT LIST:");
+                       //print("INPUT LIST:");
                        //print(inputList);
                        //print(predData());
                      }else{
                        print("ALL FILLED");
                        // print(isTextFilled==false);
                        // print((dropdown1&&dropdown2&&dropdown3)==false);
-                       print("INPUT LIST:");
+                      // print("INPUT LIST:");
                        //print(inputList);
                        // Navigator.push(context,
                        //     MaterialPageRoute(builder: (context) => PredModel()))
-                       List<double> doubleList = inputList.map((str) => double.parse(str)).toList();
+                       //List<double> doubleList = inputList.map((str) => double.parse(str)).toList();
+                        doubleList = inputList.map((str) => double.parse(str)).toList();
                        List<double> scaledList = [];
                        for (int i=0;i<11;i++){
                          scaledList.add((doubleList[i]-scale_mean[i])/scale_scale[i]);
@@ -397,11 +408,13 @@ class _MyHomePageState extends State<MyHomePage> {
                        print(doubleList);
                        print(scaledList);
                        print(predData(scaledList));
+
+                       Navigator.push(
+                         context,
+                         MaterialPageRoute(builder: (context) => MapPage()),
+                       );
                      }
-                     Navigator.pushReplacement(
-                       context,
-                       MaterialPageRoute(builder: (context) => MapPage()),
-                     );
+
                    },
                   child: Center(
                   child: Text('Predict Price'),
