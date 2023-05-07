@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:airbnbprice/map.dart';
 import 'package:airbnbprice/pred_page.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
@@ -397,6 +398,10 @@ class _MyHomePageState extends State<MyHomePage> {
                        print(scaledList);
                        print(predData(scaledList));
                      }
+                     Navigator.pushReplacement(
+                       context,
+                       MaterialPageRoute(builder: (context) => MapPage()),
+                     );
                    },
                   child: Center(
                   child: Text('Predict Price'),
