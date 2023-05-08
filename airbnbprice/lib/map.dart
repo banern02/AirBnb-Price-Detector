@@ -8,23 +8,37 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'main.dart';
 
-//const LatLng currentLoc = LatLng(doubleList[2], doubleList[3]);
-final currentLoc = LatLng(doubleList[2], doubleList[3]) ;
+// LatLng currentLoc = LatLng(doubleList[2], doubleList[3]);
+
+
+ // LatLng currentLoc= LatLng(40.334, -73.65426);
 
 class MapPage extends StatefulWidget {
-  const MapPage({Key? key}) : super(key: key);
+   MapPage({Key? key, required List<double> doubleList}) : super(key: key);
+
+  final currentLoc = LatLng(doubleList[2], doubleList[3]) ;
 
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
+  // _MapPageState(this.currentLoc);
+
+
   List<List<dynamic>> csvData = [];
   Set<Marker> _markers = {};
   int j = Neighbourhood[ng];
-  Future<void> loadData() async {
+
+  static get currentLoc_cam => LatLng(doubleList[2], doubleList[3]);
+
+
+
+
+  Future<void> loadData(LatLng currentLoc) async {
     String data = await rootBundle.loadString('assets/data$j.csv');
     csvData = CsvToListConverter().convert(data);
+
     //print(csvData);
     setState(() {
       _markers = csvData
@@ -36,6 +50,7 @@ class _MapPageState extends State<MapPage> {
         print(row[0]);
         String title = row[0];
         print(row[3]);
+
        // bool isDifferent = title == 'Cozy SI den with multiple with easy access to NYC'; // Change title as per your requirement
         //print("bool"+ isDifferent.toString());
         return Marker(
@@ -56,7 +71,7 @@ class _MapPageState extends State<MapPage> {
           .toSet();
       _markers.add(Marker(
         markerId: MarkerId('Specific Location'),
-        position: LatLng(doubleList[2], doubleList[3]),
+        position: currentLoc,
         infoWindow: InfoWindow(
           title: 'Your selected AirBnb',
             snippet: "Predicted Price: \$$predValue"
@@ -69,16 +84,16 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
-    loadData();
+    loadData(widget.currentLoc);
   }
 
   Completer<GoogleMapController> _controller = Completer();
 
-
-  static  CameraPosition _kGooglePlex = CameraPosition(
-    target: currentLoc,
-    zoom: 10,
+    CameraPosition _kGooglePlex = CameraPosition(
+    target: currentLoc_cam,
+    zoom: 16,
   );
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +121,8 @@ class _MapPageState extends State<MapPage> {
               ),
             ),
             ),
+            Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Text("Other options in the neighbourhood: ", style: TextStyle(fontWeight: FontWeight.bold),)),
             Expanded(
               flex: 4,
               child: Padding(
