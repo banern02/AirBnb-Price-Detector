@@ -1,21 +1,16 @@
 import 'dart:async';
-
 import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'main.dart';
 
-// LatLng currentLoc = LatLng(doubleList[2], doubleList[3]);
-
-
- // LatLng currentLoc= LatLng(40.334, -73.65426);
 
 class MapPage extends StatefulWidget {
    MapPage({Key? key, required List<double> doubleList}) : super(key: key);
 
+   //Green marker(Selected AirBnb) position set to Latitude ,Longitude value in input
   final currentLoc = LatLng(doubleList[2], doubleList[3]) ;
 
   @override
@@ -23,52 +18,50 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  // _MapPageState(this.currentLoc);
-
 
   List<List<dynamic>> csvData = [];
   Set<Marker> _markers = {};
+  //Storing neighbourhood selected in input
   int j = Neighbourhood[ng];
 
+  //Initial map position set to Latitude ,Longitude value in input
   static get currentLoc_cam => LatLng(doubleList[2], doubleList[3]);
 
-
-
-
+  //Loading data from csv for the corresponding neighbourhood to be used to mark on map
   Future<void> loadData(LatLng currentLoc) async {
     String data = await rootBundle.loadString('assets/data$j.csv');
     csvData = CsvToListConverter().convert(data);
 
-    //print(csvData);
     setState(() {
       _markers = csvData
           .map((row) {
+            //Latitude
         print(row[1]);
         double lat = (row[1]);
+        //Longitude
         print(row[2]);
         double lng = (row[2]);
+        //title
         print(row[0]);
         String title = row[0];
+        //Price
         print(row[3]);
 
-       // bool isDifferent = title == 'Cozy SI den with multiple with easy access to NYC'; // Change title as per your requirement
-        //print("bool"+ isDifferent.toString());
+        //Red markers for Airbnbs in same neighbourhood of selected neighbourhood
         return Marker(
           markerId: MarkerId(title),
           position: LatLng(lat, lng),
           infoWindow: InfoWindow(
-              //title: title
             title:  title,
             snippet: 'Price: \$${row[3]}',
           ),
            icon: BitmapDescriptor.defaultMarker,
-           //isDifferent
-          //     ? BitmapDescriptor.defaultMarkerWithHue(
-          //     BitmapDescriptor.hueGreen)
-          //     : BitmapDescriptor.defaultMarker,
+
         );
       })
           .toSet();
+
+      //Green maker for selected neighbourhood
       _markers.add(Marker(
         markerId: MarkerId('Specific Location'),
         position: currentLoc,

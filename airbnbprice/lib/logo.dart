@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  //Logo Screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
